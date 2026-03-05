@@ -1,7 +1,7 @@
 import datetime
 import flet as ft
 
-def main(page = ft.Page):
+def main(page: ft.Page):
     page.title = "Formulario"
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
@@ -14,7 +14,7 @@ def main(page = ft.Page):
         max_length=100,
         keyboard_type=ft.KeyboardType.TEXT,
         border=ft.InputBorder.OUTLINE,
-        margin=ft.Margin(bottom=25)
+        margin=ft.Margin(bottom=0)
     )
     
     txtTipo = ft.Dropdown(
@@ -29,8 +29,12 @@ def main(page = ft.Page):
     )
     
     today = datetime.datetime.now()
-    txtFecha = ft.DatePicker(
+    datePicker = ft.DatePicker(
         first_date=datetime.datetime(year=today.year, month=today.month, day=today.day+1)
+    )
+    
+    txtFecha = ft.Text(
+        value="MM/DD/YYYY"
     )
     
     txtModalidad = ft.RadioGroup(
@@ -67,10 +71,15 @@ def main(page = ft.Page):
         alignment=ft.MainAxisAlignment.SPACE_EVENLY,
         controls=[
             txtTipo, 
-            ft.Button(
-                content="Pick date",
-                icon=ft.Icons.CALENDAR_MONTH,
-                on_click=lambda e: page.show_dialog(txtFecha),
+            ft.Row(
+                controls=[
+                    ft.Button(
+                        icon=ft.Icons.CALENDAR_MONTH,
+                        content="Fecha",
+                        on_click=lambda e: page.show_dialog(datePicker)
+                    ),
+                    txtFecha
+                ]
             )
         ]
     ))
