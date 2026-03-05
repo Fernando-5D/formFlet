@@ -1,4 +1,4 @@
-import datetime
+from datetime import date, timedelta
 import flet as ft
 
 def main(page: ft.Page):
@@ -14,7 +14,7 @@ def main(page: ft.Page):
         max_length=100,
         keyboard_type=ft.KeyboardType.TEXT,
         border=ft.InputBorder.OUTLINE,
-        margin=ft.Margin(bottom=0)
+        width=450
     )
     
     txtTipo = ft.Dropdown(
@@ -28,13 +28,20 @@ def main(page: ft.Page):
         border=ft.InputBorder.OUTLINE
     )
     
-    today = datetime.datetime.now()
+    today = date.today()
+    def on_change_datePicker(e):
+        value = e.control.value
+        txtFecha.value = value.strftime("%Y/%m/%d")
+        page.update()
+        
     datePicker = ft.DatePicker(
-        first_date=datetime.datetime(year=today.year, month=today.month, day=today.day+1)
+        first_date=today + timedelta(days=1),
+        on_change=lambda e: on_change_datePicker(e)
     )
     
     txtFecha = ft.Text(
-        value="MM/DD/YYYY"
+        value="YYYY/MM/DD",
+        size=20
     )
     
     txtModalidad = ft.RadioGroup(
@@ -65,6 +72,9 @@ def main(page: ft.Page):
         on_change=lambda e: on_duracion_change(e)
     )
     
+    def resumen(e):
+        page.update()
+    
     page.add(txtNombre)
     
     page.add(ft.Row(
@@ -84,7 +94,10 @@ def main(page: ft.Page):
         ]
     ))
     
-    page.add(txtModalidad, txtInscripcion)
+    page.add(txtModalidad, ft.Row(
+        alignment=ft.MainAxisAlignment.CENTER,
+        controls=[txtInscripcion]
+    ))
     
     page.add(ft.Text(
         value="Duración del Evento",
@@ -96,7 +109,8 @@ def main(page: ft.Page):
     page.add(ft.Button(
         content="Mostrar Resumen",
         bgcolor=ft.Colors.BLUE_700,
-        color=ft.Colors.WHITE
+        color=ft.Colors.WHITE,
+        on_click=lambda e: resumen(e)
     ))
     
     page.add(ft.Divider(
